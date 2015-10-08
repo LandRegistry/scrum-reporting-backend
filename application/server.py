@@ -1,5 +1,5 @@
 from application import app, db
-from flask import request, render_template, request, redirect, url_for, session, flash, jsonify
+from flask import request, render_template, request, redirect, url_for, session, flash, jsonify, Response
 from application.models import programmes, projects
 
 import json
@@ -13,7 +13,8 @@ def add_programme():
     programme_request = request.get_json(force=True)
     db.session.add(programmes(programme_request['programme_name'], programme_request['programme_manager'], programme_request['service_manager']))
     db.session.commit()
-    return jsonify({'status': 'ok'})
+
+    return Response(json.dumps({'status': 'ok'}),  mimetype='application/json')
 
 @app.route('/get/programmes')
 def get_programmes():
@@ -27,14 +28,15 @@ def get_programmes():
 
         res2.append({'name': row.programme_name, 'id': row.id, 'programme_manager': row.programme_manager, 'service_manager': row.service_manager, 'projects': project_array})
 
-    return json.dumps(res2)
+    return Response(json.dumps(res2),  mimetype='application/json')
+
 
 @app.route('/add/project', methods=['POST'])
 def add_project():
     project_request = request.get_json(force=True)
     db.session.add(projects(project_request['programme_id'], project_request['project_name'], project_request['product_owner'], project_request['scrum_master']))
     db.session.commit()
-    return jsonify({'status': 'ok'})
+    return Response(json.dumps({'status': 'ok'}),  mimetype='application/json')
 
 @app.route('/get/projects')
 def get_projects():
@@ -42,4 +44,4 @@ def get_projects():
     res2 = []
     for row in res:
         res2.append({'name': row.project_name, 'programme_id': row.programme_id, 'id': row.id, 'product_owner': row.product_owner, 'scrum_master': row.scrum_master})
-    return json.dumps(res2)
+    return Response(json.dumps(res2),  mimetype='application/json')
