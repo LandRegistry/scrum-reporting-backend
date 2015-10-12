@@ -198,3 +198,22 @@ def update_burndown():
     db.session.commit()
 
     return Response(json.dumps({'status': 'ok'}),  mimetype='application/json')
+
+
+@app.route('/delete/programme/<programme_id>', methods=['GET'])
+def delete_programme(programme_id):
+    db.session.query(programmes).filter(programmes.id == programme_id).delete()
+    db.session.commit()
+    return Response(json.dumps({'status': 'ok'}),  mimetype='application/json')
+
+@app.route('/delete/project/<project_id>', methods=['GET'])
+def delete_project(project_id):
+    db.session.query(projects).filter(projects.id == project_id).delete()
+    db.session.commit()
+    return Response(json.dumps({'status': 'ok'}),  mimetype='application/json')
+
+@app.route('/delete/sprint/<sprint_id>', methods=['GET'])
+def delete_sprint(sprint_id):
+    db.session.query(sprints).filter(sprints.id == sprint_id).delete()
+    db.session.commit()
+    return Response(json.dumps({'status': 'ok'}),  mimetype='application/json')

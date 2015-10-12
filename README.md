@@ -135,6 +135,24 @@ curl -H "Content-Type: application/json" -X POST -d '{"programme_name":"zzz","pr
 }
 ```
 
+### delete programme
+
+**End Point**
+
+/delete/programme/<programme_id>
+
+**Example**
+
+curl  http://localhost:5000/delete/programme/1
+
+**Response**
+
+```
+{
+    "status": "ok"
+}
+```
+
 ## Project
 
 ### Add a project
@@ -221,6 +239,26 @@ curl -H "Content-Type: application/json" -X POST -d '{"project_name":"abc", "pro
     "status": "ok"
 }
 ```
+
+
+### delete project
+
+**End Point**
+
+/delete/project/<programme_id>
+
+**Example**
+
+curl  http://localhost:5000/delete/project/1
+
+**Response**
+
+```
+{
+    "status": "ok"
+}
+```
+
 
 ## Sprint
 
@@ -358,6 +396,25 @@ curl http://172.16.42.66:5000/get/project/1/1
     "project_description": "desc"
 }
 ```
+
+### delete sprint
+
+**End Point**
+
+/delete/sprint/<programme_id>
+
+**Example**
+
+curl  http://localhost:5000/delete/sprint/1
+
+**Response**
+
+```
+{
+    "status": "ok"
+}
+```
+
 
 ## Sprint Burn Down
 
