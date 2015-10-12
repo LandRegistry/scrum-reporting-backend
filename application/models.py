@@ -24,12 +24,13 @@ class projects(db.Model):
     project_name = Column(String(100), nullable=False)
     product_owner = Column(String(100), nullable=True)
     scrum_master = Column(String(100), nullable=True)
-
-    def __init__(self, programme_id, project_name, product_owner, scrum_master):
+    project_description = Column(String(500), nullable=True)
+    def __init__(self, programme_id, project_name, product_owner, scrum_master, project_description):
         self.programme_id = programme_id
         self.project_name = project_name
         self.product_owner = product_owner
         self.scrum_master = scrum_master
+        self.project_description = project_description
 
 
 class sprints(db.Model):
@@ -39,7 +40,7 @@ class sprints(db.Model):
     project_id = Column(Integer, nullable=False)
     start_date = Column(String(100), nullable=False)
     end_date = Column(String(100), nullable=True)
-    sprint_number = Column(String(100), nullable=True)
+    sprint_number = Column(Integer, nullable=True)
     sprint_rag = Column(String(1), nullable=False)
     sprint_goal = Column(String(500), nullable=True)
     sprint_deliverables = Column(String(500), nullable=True)

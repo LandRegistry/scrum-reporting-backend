@@ -21,7 +21,7 @@ def upgrade():
     sa.Column('project_id', sa.Integer(), nullable=False),
     sa.Column('start_date', sa.String(length=100), nullable=False),
     sa.Column('end_date', sa.String(length=100), nullable=True),
-    sa.Column('sprint_number', sa.String(length=100), nullable=True),
+    sa.Column('sprint_number', sa.Integer(), nullable=False),
     sa.Column('sprint_rag', sa.String(length=1), nullable=False),
     sa.Column('sprint_goal', sa.String(length=500), nullable=True),
     sa.Column('sprint_deliverables', sa.String(length=500), nullable=True),

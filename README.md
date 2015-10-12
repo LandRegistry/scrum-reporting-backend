@@ -1,9 +1,9 @@
 # scrum-reporting-frontend
 
 
-## Program
+## Programme
 
-### Add a program
+### Add a programme
 
 **End Point**
 
@@ -21,7 +21,7 @@ curl -H "Content-Type: application/json" -X POST -d '{"programme_name":"xyz","pr
 }
 ```
 
-### Get all programs (and project information)
+### Get all programmes (and project information)
 
 **End Point**
 
@@ -54,7 +54,8 @@ curl  http://localhost:5000/get/programmes
                 "scrum_master": "Saul Goodman",
                 "last_end_date": "01-01-2015",
                 "id": 1,
-                "last_sprint": "4"
+                "last_sprint": "4",
+                "project_description": "desc"
             },
             {
                 "name": "abc",
@@ -63,7 +64,8 @@ curl  http://localhost:5000/get/programmes
                 "scrum_master": "Saul Goodman",
                 "last_end_date": "01-01-2015",
                 "id": 2,
-                "last_sprint": "4"
+                "last_sprint": "4",
+                "project_description": "desc"
             }
         ],
         "id": 1
@@ -71,7 +73,51 @@ curl  http://localhost:5000/get/programmes
 ]
 ```
 
-### update program
+
+### Get specific programme (and project information)
+
+**End Point**
+
+/get/programme/<programme_id>
+
+**Example**
+
+curl  http://localhost:5000/get/programme/1
+
+**Response**
+
+```
+{
+    "service_manager": "Jesse Pinkman",
+    "name": "zzz",
+    "programme_manager": "Walter White",
+    "projects": [
+        {
+            "name": "abc",
+            "last_rag": "a",
+            "product_owner": "Gustavo Fring",
+            "scrum_master": "Saul Goodman",
+            "last_end_date": "01-01-2015",
+            "id": 1,
+            "last_sprint": "4",
+            "project_description": "desc"
+        },
+        {
+            "name": "abc",
+            "last_rag": "a",
+            "product_owner": "Gustavo Fring",
+            "scrum_master": "Saul Goodman",
+            "last_end_date": "01-01-2015",
+            "id": 2,
+            "last_sprint": "4",
+            "project_description": "desc"
+        }
+    ],
+    "id": 1
+}
+```
+
+### update programme
 
 **End Point**
 
@@ -99,7 +145,7 @@ curl -H "Content-Type: application/json" -X POST -d '{"programme_name":"zzz","pr
 
 **Example**
 
-curl -H "Content-Type: application/json" -X POST -d '{"project_name":"abc", "programme_id": "1", "product_owner": "Gus Fring", "scrum_master": "Saul Goodman"}' http://localhost:5000/add/project
+curl -H "Content-Type: application/json" -X POST -d '{"project_name":"abc", "programme_id": "1", "product_owner": "Gus Fring", "scrum_master": "Saul Goodman", "project_description": "desc"}' http://localhost:5000/add/project
 
 **Response**
 
@@ -112,7 +158,7 @@ curl -H "Content-Type: application/json" -X POST -d '{"project_name":"abc", "pro
 
 **End Point**
 
-/get/projects/<project_id>
+/get/project/<project_id>
 
 **Example**
 
@@ -121,35 +167,41 @@ curl  http://localhost:5000/get/projects/1
 **Response**
 
 ```
-[
-    {
-        "scrum_master": "Saul Goodman",
-        "programme_id": 1,
-        "id": 1,
-        "name": "abc",
-        "product_owner": "Gus Fring",
-        "sprint_array": [
-            {
-                "agreed_points": 300,
-                "sprint_deliverables": "Sprint Deliverables",
-                "started_points": 50,
-                "sprint_dependencies": "Sprint Dependencies",
-                "end_date": "some other date",
-                "start_date": "some date",
-                "sprint_days": 14,
-                "sprint_risks": "Sprint Risks",
-                "project_id": 1,
-                "delivered_points": 180,
-                "sprint_number": "4",
-                "sprint_goal": "Sprint Goal",
-                "sprint_rag": "a",
-                "id": 1,
-                "sprint_challenges": "Sprint Challenges",
-                "sprint_issues": "Sprint Issues"
-            }
-        ]
-    }
-]
+{
+    "scrum_master": "Saul Goodman",
+    "programme_id": 1,
+    "id": 1,
+    "name": "abc",
+    "product_owner": "Gus Fring",
+    "project_description": "desc",
+    "programme_manager": "dsads",
+    "programme_name": "dsad",
+    "service_manager": "adsa",
+    "last_end_date": "01-01-2015",
+    "last_sprint": "4",
+    "last_rag": "a",
+    "sprint_array": [
+        {
+            "agreed_points": 300,
+            "sprint_deliverables": "Sprint Deliverables",
+            "started_points": 50,
+            "sprint_dependencies": "Sprint Dependencies",
+            "end_date": "some other date",
+            "start_date": "some date",
+            "sprint_days": 14,
+            "sprint_risks": "Sprint Risks",
+            "project_id": 1,
+            "delivered_points": 180,
+            "sprint_number": "4",
+            "sprint_goal": "Sprint Goal",
+            "sprint_rag": "a",
+            "id": 1,
+            "sprint_challenges": "Sprint Challenges",
+            "sprint_issues": "Sprint Issues"
+        }
+    ]
+}
+
 ```
 
 ### Update a project
@@ -160,7 +212,7 @@ curl  http://localhost:5000/get/projects/1
 
 **Example**
 
-curl -H "Content-Type: application/json" -X POST -d '{"project_name":"abc", "programme_id": "1", "product_owner": "Gustavo Fring", "scrum_master": "Saul Goodman"}' http://localhost:5000/update/project/1
+curl -H "Content-Type: application/json" -X POST -d '{"project_name":"abc", "programme_id": "1", "product_owner": "Gustavo Fring", "scrum_master": "Saul Goodman", "project_description": "desc"}' http://localhost:5000/update/project/1
 
 **Response**
 
@@ -186,7 +238,9 @@ curl -H "Content-Type: application/json" -X POST -d '{"project_id":"1", "start_d
 
 ```
 {
-    "status": "ok"
+    "status": "ok",
+    "id": "5"
+
 }
 ```
 
@@ -198,7 +252,8 @@ curl -H "Content-Type: application/json" -X POST -d '{"project_id":"1", "start_d
 
 **Example**
 
-curl -H "Content-Type: application/json" -X POST -d '{"project_id":"1", "start_date": "some date", "end_date": "some other date", "sprint_number": "4", "sprint_rag": "a", "sprint_goal": "Sprint Goal", "sprint_deliverables": "Sprint Deliverables", "sprint_challenges": "Sprint Challenges", "agreed_points": "400", "delivered_points": "180", "started_points": "50", "sprint_issues": "Sprint Issues", "sprint_risks": "Sprint Risks", "sprint_dependencies": "Sprint Dependencies"  }' http://localhost:5000/update/sprint/1
+curl -H "Content-Type: application/json" -X POST -d '{"project_id":"1", "start_date": "some date", "end_date": "some other date", "sprint_number": "4", "sprint_rag": "a", "sprint_goal": "Sprint Goal", "sprint_deliverables": "Sprint Deliverables", "sprint_challenges": "Sprint Challenges", "agreed_points": "400", "delivered_points": "180", "started_points": "50", "sprint_issues": "Sprint Issues", "sprint_risks": "Sprint Risks", "sprint_dependencies": "Sprint Dependencies", "sprint_days": "10"  }' http://localhost:5000/update/sprint/1
+
 
 **Response**
 
@@ -299,7 +354,8 @@ curl http://172.16.42.66:5000/get/project/1/1
     "product_owner": "Gus Fring",
     "sprint_goal": "Sprint Goal",
     "script_id": 1,
-    "sprint_challenges": "Sprint Challenges"
+    "sprint_challenges": "Sprint Challenges",
+    "project_description": "desc"
 }
 ```
 
