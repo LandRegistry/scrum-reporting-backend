@@ -24,7 +24,7 @@ class projects(db.Model):
     project_name = Column(String(100), nullable=False)
     product_owner = Column(String(100), nullable=True)
     scrum_master = Column(String(100), nullable=True)
-    project_description = Column(String(500), nullable=True)
+    project_description = Column(String(2000), nullable=True)
     def __init__(self, programme_id, project_name, product_owner, scrum_master, project_description):
         self.programme_id = programme_id
         self.project_name = project_name
@@ -42,15 +42,15 @@ class sprints(db.Model):
     end_date = Column(String(100), nullable=True)
     sprint_number = Column(Integer, nullable=True)
     sprint_rag = Column(String(1), nullable=False)
-    sprint_goal = Column(String(500), nullable=True)
-    sprint_deliverables = Column(String(500), nullable=True)
-    sprint_challenges = Column(String(500), nullable=False)
+    sprint_goal = Column(String(2000), nullable=True)
+    sprint_deliverables = Column(String(2000), nullable=True)
+    sprint_challenges = Column(String(2000), nullable=False)
     agreed_points = Column(Integer, nullable=True)
     delivered_points = Column(Integer, nullable=True)
     started_points = Column(Integer, nullable=False)
-    sprint_issues = Column(String(500), nullable=True)
-    sprint_risks = Column(String(500), nullable=True)
-    sprint_dependencies = Column(String(500), nullable=True)
+    sprint_issues = Column(String(2000), nullable=True)
+    sprint_risks = Column(String(2000), nullable=True)
+    sprint_dependencies = Column(String(2000), nullable=True)
     sprint_days = Column(Integer, nullable=True)
 
     def __init__(self, project_id, start_date, end_date, sprint_number, sprint_rag, sprint_goal, sprint_deliverables, sprint_challenges, agreed_points, delivered_points, started_points, sprint_issues, sprint_risks, sprint_dependencies, sprint_days):
