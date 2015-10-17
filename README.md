@@ -412,6 +412,104 @@ curl http://172.16.42.66:5000/get/project/1/1
 }
 ```
 
+
+### Get project sprint data (using sprint_number)
+
+**End Point**
+
+/get/project/<project_id>/sprint_number/<sprint_number>
+
+**Example**
+
+curl http://172.16.42.66:5000/get/project/1/sprint_number/4
+
+**Response**
+
+```
+{
+    "scrum_master": "Saul Goodman",
+    "burndown": [
+        {
+            "sprint_done": 20,
+            "sprint_day": 1
+        },
+        {
+            "sprint_done": 3,
+            "sprint_day": 2
+        },
+        {
+            "sprint_done": 3,
+            "sprint_day": 3
+        },
+        {
+            "sprint_done": 3,
+            "sprint_day": 4
+        },
+        {
+            "sprint_done": 3,
+            "sprint_day": 5
+        },
+        {
+            "sprint_done": 3,
+            "sprint_day": 6
+        },
+        {
+            "sprint_done": 3,
+            "sprint_day": 7
+        },
+        {
+            "sprint_done": 3,
+            "sprint_day": 8
+        },
+        {
+            "sprint_done": 3,
+            "sprint_day": 9
+        },
+        {
+            "sprint_done": 3,
+            "sprint_day": 10
+        },
+        {
+            "sprint_done": 3,
+            "sprint_day": 11
+        },
+        {
+            "sprint_done": 3,
+            "sprint_day": 12
+        },
+        {
+            "sprint_done": 3,
+            "sprint_day": 13
+        },
+        {
+            "sprint_done": 3,
+            "sprint_day": 14
+        }
+    ],
+    "agreed_points": 300,
+    "sprint_deliverables": "Sprint Deliverables",
+    "started_points": 50,
+    "sprint_dependencies": "Sprint Dependencies",
+    "end_date": "some other date",
+    "start_date": "some date",
+    "sprint_days": 14,
+    "sprint_issues": "Sprint Issues",
+    "sprint_risks": "Sprint Risks",
+    "project_id": 1,
+    "delivered_points": 180,
+    "programme_id": 1,
+    "sprint_number": "4",
+    "name": "abc",
+    "sprint_rag": "a",
+    "product_owner": "Gus Fring",
+    "sprint_goal": "Sprint Goal",
+    "script_id": 1,
+    "sprint_challenges": "Sprint Challenges",
+    "project_description": "desc"
+}
+```
+
+
 ### delete sprint
 
 **End Point**

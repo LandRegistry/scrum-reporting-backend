@@ -221,6 +221,21 @@ def get_projectsprint(project_id,sprint_id):
         return Response(json.dumps({'status': 'Sprint not found'}),  mimetype='application/json')
     return Response(json.dumps({'status': 'Project not found'}),  mimetype='application/json')
 
+@app.route('/get/project/<project_id>/sprint_number/<sprint_number>')
+def get_projectsprintnumber(project_id,sprint_number):
+    res = projects.query.filter(projects.id == project_id).order_by(projects.project_name).all()
+    if (len(res) == 1):
+        res_sub = sprints.query.filter(sprints.sprint_number == sprint_number and sprint.project_id == project_id).order_by(sprints.sprint_number).all()
+        if (len(res_sub) == 1):
+            res_sub2 = burndown.query.filter(burndown.sprint_id == res_sub[0].id).order_by(burndown.sprint_day).all()
+            burndown_array = []
+            for row_sub2 in res_sub2:
+                burndown_array.append({'sprint_day': row_sub2.sprint_day, 'sprint_done': row_sub2.sprint_done})
+            res2 = {'name': res[0].project_name, 'programme_id': res[0].programme_id, 'project_id': res[0].id, 'product_owner': res[0].product_owner, 'scrum_master': res[0].scrum_master, 'sprint_id': res_sub[0].id, 'start_date': res_sub[0].start_date, 'end_date': res_sub[0].end_date, 'sprint_number': res_sub[0].sprint_number, 'sprint_rag': res_sub[0].sprint_rag, 'sprint_goal': res_sub[0].sprint_goal, 'sprint_deliverables': res_sub[0].sprint_deliverables, 'sprint_challenges': res_sub[0].sprint_challenges, 'delivered_points': res_sub[0].delivered_points, 'started_points': res_sub[0].started_points, 'agreed_points': res_sub[0].agreed_points, 'sprint_issues': res_sub[0].sprint_issues, 'sprint_risks': res_sub[0].sprint_risks, 'sprint_dependencies': res_sub[0].sprint_dependencies, 'sprint_days': res_sub[0].sprint_days, 'burndown': burndown_array, 'project_description': res[0].project_description, 'delivery_manager': res[0].delivery_manager , 'scrum_tool_link': res[0].scrum_tool_link}
+            return Response(json.dumps(res2),  mimetype='application/json')
+        return Response(json.dumps({'status': 'Sprint not found'}),  mimetype='application/json')
+    return Response(json.dumps({'status': 'Project not found'}),  mimetype='application/json')
+
 
 @app.route('/update/burn_down', methods=['POST'])
 def update_burndown():
