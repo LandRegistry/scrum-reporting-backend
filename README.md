@@ -55,7 +55,10 @@ curl  http://localhost:5000/get/programmes
                 "last_end_date": "01-01-2015",
                 "id": 1,
                 "last_sprint": "4",
-                "project_description": "desc"
+                "project_description": "desc",
+                "delivery_manager": "Hank Schrader",
+                "scrum_tool_link": "http://www.trello.com/...",
+                "average_points": 15
             },
             {
                 "name": "abc",
@@ -65,7 +68,10 @@ curl  http://localhost:5000/get/programmes
                 "last_end_date": "01-01-2015",
                 "id": 2,
                 "last_sprint": "4",
-                "project_description": "desc"
+                "project_description": "desc",
+                "delivery_manager": "Hank Schrader",
+                "scrum_tool_link": "http://www.trello.com/...",
+                "average_points": 15
             }
         ],
         "id": 1
@@ -100,7 +106,10 @@ curl  http://localhost:5000/get/programme/1
             "last_end_date": "01-01-2015",
             "id": 1,
             "last_sprint": "4",
-            "project_description": "desc"
+            "project_description": "desc",
+            "delivery_manager": "Hank Schrader",
+            "scrum_tool_link": "http://www.trello.com/...",
+            "average_points": 15
         },
         {
             "name": "abc",
@@ -110,7 +119,10 @@ curl  http://localhost:5000/get/programme/1
             "last_end_date": "01-01-2015",
             "id": 2,
             "last_sprint": "4",
-            "project_description": "desc"
+            "project_description": "desc",
+            "delivery_manager": "Hank Schrader",
+            "scrum_tool_link": "http://www.trello.com/...",
+            "average_points": 15
         }
     ],
     "id": 1
@@ -198,6 +210,9 @@ curl  http://localhost:5000/get/projects/1
     "last_end_date": "01-01-2015",
     "last_sprint": "4",
     "last_rag": "a",
+    "delivery_manager": "Hank Schrader",
+    "scrum_tool_link": "http://www.trello.com/...",
+    "average_points": 15,
     "sprint_array": [
         {
             "agreed_points": 300,
@@ -230,7 +245,7 @@ curl  http://localhost:5000/get/projects/1
 
 **Example**
 
-curl -H "Content-Type: application/json" -X POST -d '{"project_name":"abc", "programme_id": "1", "product_owner": "Gustavo Fring", "scrum_master": "Saul Goodman", "project_description": "desc"}' http://localhost:5000/update/project/1
+curl -H "Content-Type: application/json" -X POST -d '{"project_name":"abc", "programme_id": "1", "product_owner": "Gustavo Fring", "scrum_master": "Saul Goodman", "project_description": "desc", "delivery_manager": "Hank Schrader", "scrum_tool_link": "http://www.trello.com/..." }' http://localhost:5000/update/project/1
 
 **Response**
 

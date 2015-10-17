@@ -24,13 +24,18 @@ class projects(db.Model):
     project_name = Column(String(100), nullable=False)
     product_owner = Column(String(100), nullable=True)
     scrum_master = Column(String(100), nullable=True)
+    delivery_manager = Column(String(100), nullable=True)
     project_description = Column(String(2000), nullable=True)
-    def __init__(self, programme_id, project_name, product_owner, scrum_master, project_description):
+    scrum_tool_link = Column(String(2000), nullable=True)
+
+    def __init__(self, programme_id, project_name, product_owner, scrum_master, project_description, delivery_manager, scrum_tool_link):
         self.programme_id = programme_id
         self.project_name = project_name
         self.product_owner = product_owner
         self.scrum_master = scrum_master
         self.project_description = project_description
+        self.delivery_manager = delivery_manager
+        self.scrum_tool_link = scrum_tool_link
 
 
 class sprints(db.Model):
