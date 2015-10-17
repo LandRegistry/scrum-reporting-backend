@@ -1,6 +1,6 @@
 from application import app, db
 from flask import request, render_template, request, redirect, url_for, session, flash, jsonify, Response
-from application.models import programmes, projects, sprints, burndown
+from application.models import programmes, projects, sprints, burndown, sprintpeople, sprintpeoplerecord
 from sqlalchemy.sql import func
 
 import json
@@ -216,7 +216,19 @@ def get_projectsprint(project_id,sprint_id):
             burndown_array = []
             for row_sub2 in res_sub2:
                 burndown_array.append({'sprint_day': row_sub2.sprint_day, 'sprint_done': row_sub2.sprint_done})
-            res2 = {'name': res[0].project_name, 'programme_id': res[0].programme_id, 'project_id': res[0].id, 'product_owner': res[0].product_owner, 'scrum_master': res[0].scrum_master, 'sprint_id': res_sub[0].id, 'start_date': res_sub[0].start_date, 'end_date': res_sub[0].end_date, 'sprint_number': res_sub[0].sprint_number, 'sprint_rag': res_sub[0].sprint_rag, 'sprint_goal': res_sub[0].sprint_goal, 'sprint_deliverables': res_sub[0].sprint_deliverables, 'sprint_challenges': res_sub[0].sprint_challenges, 'delivered_points': res_sub[0].delivered_points, 'started_points': res_sub[0].started_points, 'agreed_points': res_sub[0].agreed_points, 'sprint_issues': res_sub[0].sprint_issues, 'sprint_risks': res_sub[0].sprint_risks, 'sprint_dependencies': res_sub[0].sprint_dependencies, 'sprint_days': res_sub[0].sprint_days, 'burndown': burndown_array, 'project_description': res[0].project_description, 'delivery_manager': res[0].delivery_manager , 'scrum_tool_link': res[0].scrum_tool_link}
+
+            res_sub3 = sprintpeople.query.filter(sprintpeople.sprint_id == sprint_id).order_by(sprintpeople.person_name).all()
+            sprintpeople_array = []
+            for row_sub3 in res_sub3:
+
+                res_sub4 = sprintpeoplerecord.query.filter(sprintpeoplerecord.sprintpeople_id == row_sub3.id).order_by(sprintpeoplerecord.sprint_day).all()
+                sprintpeople_record_array = []
+                for row_sub4 in res_sub4:
+                    sprintpeople_record_array.append(row2dict(row_sub4))
+
+                sprintpeople_array.append(merge_two_dicts(row2dict(row_sub3), {'sprint_record': sprintpeople_record_array}))
+
+            res2 = {'name': res[0].project_name, 'programme_id': res[0].programme_id, 'project_id': res[0].id, 'product_owner': res[0].product_owner, 'scrum_master': res[0].scrum_master, 'sprint_id': res_sub[0].id, 'start_date': res_sub[0].start_date, 'end_date': res_sub[0].end_date, 'sprint_number': res_sub[0].sprint_number, 'sprint_rag': res_sub[0].sprint_rag, 'sprint_goal': res_sub[0].sprint_goal, 'sprint_deliverables': res_sub[0].sprint_deliverables, 'sprint_challenges': res_sub[0].sprint_challenges, 'delivered_points': res_sub[0].delivered_points, 'started_points': res_sub[0].started_points, 'agreed_points': res_sub[0].agreed_points, 'sprint_issues': res_sub[0].sprint_issues, 'sprint_risks': res_sub[0].sprint_risks, 'sprint_dependencies': res_sub[0].sprint_dependencies, 'sprint_days': res_sub[0].sprint_days, 'burndown': burndown_array, 'project_description': res[0].project_description, 'delivery_manager': res[0].delivery_manager , 'scrum_tool_link': res[0].scrum_tool_link, 'sprintpeople_array': sprintpeople_array}
             return Response(json.dumps(res2),  mimetype='application/json')
         return Response(json.dumps({'status': 'Sprint not found'}),  mimetype='application/json')
     return Response(json.dumps({'status': 'Project not found'}),  mimetype='application/json')
@@ -227,12 +239,7 @@ def get_projectsprintnumber(project_id,sprint_number):
     if (len(res) == 1):
         res_sub = sprints.query.filter(sprints.sprint_number == sprint_number and sprint.project_id == project_id).order_by(sprints.sprint_number).all()
         if (len(res_sub) == 1):
-            res_sub2 = burndown.query.filter(burndown.sprint_id == res_sub[0].id).order_by(burndown.sprint_day).all()
-            burndown_array = []
-            for row_sub2 in res_sub2:
-                burndown_array.append({'sprint_day': row_sub2.sprint_day, 'sprint_done': row_sub2.sprint_done})
-            res2 = {'name': res[0].project_name, 'programme_id': res[0].programme_id, 'project_id': res[0].id, 'product_owner': res[0].product_owner, 'scrum_master': res[0].scrum_master, 'sprint_id': res_sub[0].id, 'start_date': res_sub[0].start_date, 'end_date': res_sub[0].end_date, 'sprint_number': res_sub[0].sprint_number, 'sprint_rag': res_sub[0].sprint_rag, 'sprint_goal': res_sub[0].sprint_goal, 'sprint_deliverables': res_sub[0].sprint_deliverables, 'sprint_challenges': res_sub[0].sprint_challenges, 'delivered_points': res_sub[0].delivered_points, 'started_points': res_sub[0].started_points, 'agreed_points': res_sub[0].agreed_points, 'sprint_issues': res_sub[0].sprint_issues, 'sprint_risks': res_sub[0].sprint_risks, 'sprint_dependencies': res_sub[0].sprint_dependencies, 'sprint_days': res_sub[0].sprint_days, 'burndown': burndown_array, 'project_description': res[0].project_description, 'delivery_manager': res[0].delivery_manager , 'scrum_tool_link': res[0].scrum_tool_link}
-            return Response(json.dumps(res2),  mimetype='application/json')
+            return get_projectsprint(project_id, str(res_sub[0].id))
         return Response(json.dumps({'status': 'Sprint not found'}),  mimetype='application/json')
     return Response(json.dumps({'status': 'Project not found'}),  mimetype='application/json')
 
@@ -267,3 +274,44 @@ def delete_sprint(sprint_id):
     db.session.query(sprints).filter(sprints.id == sprint_id).delete()
     db.session.commit()
     return Response(json.dumps({'status': 'ok'}),  mimetype='application/json')
+    sprint_id = Column(Integer, nullable=False)
+    person_name = Column(String(100), nullable=False)
+
+@app.route('/add/sprintperson', methods=['POST'])
+def add_sprintperson():
+    sprintperson_request = request.get_json(force=True)
+    sprintperson_row = sprintpeople(sprintperson_request['sprint_id'], sprintperson_request['person_name'])
+    db.session.add(sprintperson_row)
+    db.session.commit()
+    return Response(json.dumps({'status': 'ok', 'id': sprintperson_row.id}),  mimetype='application/json')
+
+@app.route('/delete/sprintperson/<sprintperson_id>', methods=['GET'])
+def delete_sprintperson(sprintperson_id):
+    db.session.query(sprintpeople).filter(sprintpeople.id == sprintperson_id).delete()
+    db.session.commit()
+    return Response(json.dumps({'status': 'ok'}),  mimetype='application/json')
+
+
+@app.route('/update/sprintpeoplerecord', methods=['POST'])
+def update_sprintpeoplerecord():
+    sprintpeoplerecord_request = request.get_json(force=True)
+    db.session.query(sprintpeoplerecord).filter(sprintpeoplerecord.sprintpeople_id == sprintpeoplerecord_request['sprintpeople_id']).delete()
+    #db.session.commit()
+
+    for row in sprintpeoplerecord_request['sprint_days']:
+        db.session.add(sprintpeoplerecord(sprintpeoplerecord_request['sprintpeople_id'], row['sprint_day'], row['sprint_daystatus']))
+    db.session.commit()
+
+    return Response(json.dumps({'status': 'ok'}),  mimetype='application/json')
+
+def row2dict(row):
+    d = {}
+    for column in row.__table__.columns:
+        d[column.name] = str(getattr(row, column.name))
+    return d
+
+def merge_two_dicts(x, y):
+    '''Given two dicts, merge them into a new dict as a shallow copy.'''
+    z = x.copy()
+    z.update(y)
+    return z

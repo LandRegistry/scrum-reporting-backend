@@ -87,3 +87,27 @@ class burndown(db.Model):
         self.sprint_id = sprint_id
         self.sprint_day = sprint_day
         self.sprint_done = sprint_done
+
+class sprintpeople(db.Model):
+    __tablename__ = 'sprintpeople'
+
+    id = Column(Integer, primary_key=True)
+    sprint_id = Column(Integer, nullable=False)
+    person_name = Column(String(100), nullable=False)
+
+    def __init__(self, sprint_id, person_name):
+        self.sprint_id = sprint_id
+        self.person_name = person_name
+
+class sprintpeoplerecord(db.Model):
+    __tablename__ = 'sprintpeoplerecord'
+
+    id = Column(Integer, primary_key=True)
+    sprintpeople_id = Column(Integer, nullable=False)
+    sprint_day = Column(Integer, nullable=False)
+    sprint_daystatus = Column(Integer, nullable=False)
+
+    def __init__(self, sprintpeople_id, sprint_day, sprint_daystatus):
+        self.sprintpeople_id = sprintpeople_id
+        self.sprint_day = sprint_day
+        self.sprint_daystatus = sprint_daystatus

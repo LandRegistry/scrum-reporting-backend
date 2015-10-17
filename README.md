@@ -548,3 +548,61 @@ curl -H "Content-Type: application/json" -X POST -d '{"sprint_id": "1", "sprint_
     "status": "ok"
 }
 ```
+
+## Sprint People
+
+### Add a sprint
+
+**End Point**
+
+/add/sprintperson
+
+**Example**
+
+curl -H "Content-Type: application/json" -X POST -d '{"sprint_id":"1", "person_name": "Mike Ehrmantraut" }' http://localhost:5000/add/sprintperson
+
+**Response**
+
+```
+{
+    "status": "ok",
+    "id": "5"
+
+}
+```
+### delete sprintperson
+
+**End Point**
+
+/delete/sprintperson/<programme_id>
+
+**Example**
+
+curl  http://localhost:5000/delete/sprintperson/1
+
+**Response**
+
+```
+{
+    "status": "ok"
+}
+```
+## Sprint People Record (entry for each day of the sprint)
+
+### Update sprint sprintpeoplerecord (use to also add initially)
+
+**End Point**
+
+/update/sprintpeoplerecord
+
+**Example**
+
+curl -H "Content-Type: application/json" -X POST -d '{"sprintpeople_id": "1", "sprint_days": [{"sprint_day": "1", "sprint_daystatus": "1"},{"sprint_day": "2","sprint_daystatus": "1"},{"sprint_day": "3", "sprint_daystatus": "2"},{ "sprint_day": "4","sprint_daystatus": "3"},{"sprint_day": "5","sprint_daystatus": "3"},{"sprint_day": "6","sprint_daystatus": "3"},{"sprint_day": "7","sprint_daystatus": "3"},{"sprint_day": "8","sprint_daystatus": "3"},{"sprint_day": "9","sprint_daystatus": "3"},{"sprint_day": "10","sprint_daystatus": "3"},{"sprint_day": "11","sprint_daystatus": "3"},{"sprint_day": "12","sprint_daystatus": "3"},{"sprint_day": "13","sprint_daystatus": "3"},{"sprint_day": "14","sprint_daystatus": "3"}]}' http://localhost:5000/update/sprintpeoplerecord
+
+**Response**
+
+```
+{
+    "status": "ok"
+}
+```
