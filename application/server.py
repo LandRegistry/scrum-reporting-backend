@@ -240,7 +240,7 @@ def get_projectsprint(project_id,sprint_id):
 def get_projectsprintnumber(project_id,sprint_number):
     res = projects.query.filter(projects.id == project_id).order_by(projects.project_name).all()
     if (len(res) == 1):
-        res_sub = sprints.query.filter(sprints.sprint_number == sprint_number and sprint.project_id == project_id).order_by(sprints.sprint_number).all()
+        res_sub = sprints.query.filter(sprints.sprint_number == sprint_number and sprints.project_id == project_id).order_by(sprints.sprint_number).all()
         if (len(res_sub) == 1):
             return get_projectsprint(project_id, str(res_sub[0].id))
         return Response(json.dumps({'status': 'Sprint not found'}),  mimetype='application/json')
