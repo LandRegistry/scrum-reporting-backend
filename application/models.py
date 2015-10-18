@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, DateTime, Float
 from sqlalchemy.dialects.postgresql import JSON
 from application import db
 
@@ -57,8 +57,9 @@ class sprints(db.Model):
     sprint_risks = Column(String(2000), nullable=True)
     sprint_dependencies = Column(String(2000), nullable=True)
     sprint_days = Column(Integer, nullable=True)
+    sprint_teamdays = Column(Integer, nullable=True)
 
-    def __init__(self, project_id, start_date, end_date, sprint_number, sprint_rag, sprint_goal, sprint_deliverables, sprint_challenges, agreed_points, delivered_points, started_points, sprint_issues, sprint_risks, sprint_dependencies, sprint_days):
+    def __init__(self, project_id, start_date, end_date, sprint_number, sprint_rag, sprint_goal, sprint_deliverables, sprint_challenges, agreed_points, delivered_points, started_points, sprint_issues, sprint_risks, sprint_dependencies, sprint_days, sprint_teamdays):
         self.project_id = project_id
         self.start_date = start_date
         self.end_date = end_date
@@ -74,6 +75,7 @@ class sprints(db.Model):
         self.sprint_risks = sprint_risks
         self.sprint_dependencies = sprint_dependencies
         self.sprint_days = sprint_days
+        self.sprint_teamdays = sprint_teamdays
 
 class burndown(db.Model):
     __tablename__ = 'burndown'
@@ -111,3 +113,22 @@ class sprintpeoplerecord(db.Model):
         self.sprintpeople_id = sprintpeople_id
         self.sprint_day = sprint_day
         self.sprint_daystatus = sprint_daystatus
+
+class daytypes(db.Model):
+    __tablename__ = 'daytypes'
+
+    id = Column(Integer, primary_key=True)
+    project_id = Column(Integer, nullable=False)
+    daytype_status = Column(String(3), nullable=False)
+    daytype_name = Column(String(100), nullable=False)
+    daytype_color = Column(String(6), nullable=False)
+    daytype_day = Column(Float, nullable=False)
+    daytype_order = Column(Integer, nullable=False)
+
+    def __init__(self, project_id, daytype_status, daytype_name, daytype_color, daytype_day, daytype_order):
+        self.project_id = project_id
+        self.daytype_status = daytype_status
+        self.daytype_name = daytype_name
+        self.daytype_color = daytype_color
+        self.daytype_day = daytype_day
+        self.daytype_order = daytype_order

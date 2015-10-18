@@ -1,6 +1,6 @@
 from application import app, db
 from flask import request, render_template, request, redirect, url_for, session, flash, jsonify, Response
-from application.models import programmes, projects, sprints, burndown, sprintpeople, sprintpeoplerecord
+from application.models import programmes, projects, sprints, burndown, sprintpeople, sprintpeoplerecord, daytypes
 from sqlalchemy.sql import func
 
 import json
@@ -107,9 +107,11 @@ def update_programme(programme_id):
 @app.route('/add/project', methods=['POST'])
 def add_project():
     project_request = request.get_json(force=True)
-    db.session.add(projects(project_request['programme_id'], project_request['project_name'], project_request['product_owner'], project_request['scrum_master'], project_request['project_description'], project_request['delivery_manager'], project_request['scrum_tool_link']))
+    projects_row = projects(project_request['programme_id'], project_request['project_name'], project_request['product_owner'], project_request['scrum_master'], project_request['project_description'], project_request['delivery_manager'], project_request['scrum_tool_link'])
+    db.session.add(projects_row)
     db.session.commit()
-    return Response(json.dumps({'status': 'ok'}),  mimetype='application/json')
+
+    return Response(json.dumps({'status': 'ok', 'id': projects_row.id}),  mimetype='application/json')
 
 @app.route('/get/project/<project_id>')
 def get_projects(project_id):
@@ -175,7 +177,7 @@ def update_project(project_id):
 @app.route('/add/sprint', methods=['POST'])
 def add_sprint():
     sprint_request = request.get_json(force=True)
-    sprint_row = sprints(sprint_request['project_id'], sprint_request['start_date'], sprint_request['end_date'], sprint_request['sprint_number'], sprint_request['sprint_rag'], sprint_request['sprint_goal'], sprint_request['sprint_deliverables'], sprint_request['sprint_challenges'], sprint_request['agreed_points'], sprint_request['delivered_points'], sprint_request['started_points'], sprint_request['sprint_issues'], sprint_request['sprint_risks'], sprint_request['sprint_dependencies'], sprint_request['sprint_days'])
+    sprint_row = sprints(sprint_request['project_id'], sprint_request['start_date'], sprint_request['end_date'], sprint_request['sprint_number'], sprint_request['sprint_rag'], sprint_request['sprint_goal'], sprint_request['sprint_deliverables'], sprint_request['sprint_challenges'], sprint_request['agreed_points'], sprint_request['delivered_points'], sprint_request['started_points'], sprint_request['sprint_issues'], sprint_request['sprint_risks'], sprint_request['sprint_dependencies'], sprint_request['sprint_days'], sprint_request['sprint_teamdays'])
     db.session.add(sprint_row)
     db.session.commit()
     return Response(json.dumps({'status': 'ok', 'id': sprint_row.id}),  mimetype='application/json')
@@ -201,6 +203,7 @@ def update_sprint(sprint_id):
         res[0].sprint_risks = sprint_request['sprint_risks']
         res[0].sprint_dependencies = sprint_request['sprint_dependencies']
         res[0].sprint_days = sprint_request['sprint_days']
+        res[0].sprint_teamdays = sprint_request['sprint_teamdays']
         db.session.commit()
         return Response(json.dumps({'status': 'updated'}),  mimetype='application/json')
     return Response(json.dumps({'status': 'not updated'}),  mimetype='application/json')
@@ -228,7 +231,7 @@ def get_projectsprint(project_id,sprint_id):
 
                 sprintpeople_array.append(merge_two_dicts(row2dict(row_sub3), {'sprint_record': sprintpeople_record_array}))
 
-            res2 = {'name': res[0].project_name, 'programme_id': res[0].programme_id, 'project_id': res[0].id, 'product_owner': res[0].product_owner, 'scrum_master': res[0].scrum_master, 'sprint_id': res_sub[0].id, 'start_date': res_sub[0].start_date, 'end_date': res_sub[0].end_date, 'sprint_number': res_sub[0].sprint_number, 'sprint_rag': res_sub[0].sprint_rag, 'sprint_goal': res_sub[0].sprint_goal, 'sprint_deliverables': res_sub[0].sprint_deliverables, 'sprint_challenges': res_sub[0].sprint_challenges, 'delivered_points': res_sub[0].delivered_points, 'started_points': res_sub[0].started_points, 'agreed_points': res_sub[0].agreed_points, 'sprint_issues': res_sub[0].sprint_issues, 'sprint_risks': res_sub[0].sprint_risks, 'sprint_dependencies': res_sub[0].sprint_dependencies, 'sprint_days': res_sub[0].sprint_days, 'burndown': burndown_array, 'project_description': res[0].project_description, 'delivery_manager': res[0].delivery_manager , 'scrum_tool_link': res[0].scrum_tool_link, 'sprintpeople_array': sprintpeople_array}
+            res2 = {'name': res[0].project_name, 'programme_id': res[0].programme_id, 'project_id': res[0].id, 'product_owner': res[0].product_owner, 'scrum_master': res[0].scrum_master, 'sprint_id': res_sub[0].id, 'start_date': res_sub[0].start_date, 'end_date': res_sub[0].end_date, 'sprint_number': res_sub[0].sprint_number, 'sprint_rag': res_sub[0].sprint_rag, 'sprint_goal': res_sub[0].sprint_goal, 'sprint_deliverables': res_sub[0].sprint_deliverables, 'sprint_challenges': res_sub[0].sprint_challenges, 'delivered_points': res_sub[0].delivered_points, 'started_points': res_sub[0].started_points, 'agreed_points': res_sub[0].agreed_points, 'sprint_issues': res_sub[0].sprint_issues, 'sprint_risks': res_sub[0].sprint_risks, 'sprint_dependencies': res_sub[0].sprint_dependencies, 'sprint_days': res_sub[0].sprint_days, 'burndown': burndown_array, 'project_description': res[0].project_description, 'delivery_manager': res[0].delivery_manager , 'scrum_tool_link': res[0].scrum_tool_link, 'sprintpeople_array': sprintpeople_array, 'sprint_teamdays': res_sub[0].sprint_teamdays}
             return Response(json.dumps(res2),  mimetype='application/json')
         return Response(json.dumps({'status': 'Sprint not found'}),  mimetype='application/json')
     return Response(json.dumps({'status': 'Project not found'}),  mimetype='application/json')
@@ -303,6 +306,60 @@ def update_sprintpeoplerecord():
     db.session.commit()
 
     return Response(json.dumps({'status': 'ok'}),  mimetype='application/json')
+
+@app.route('/update/sprintpeoplerecord/<sprintpeoplerecord_id>', methods=['POST'])
+def update_sprintpeoplerecord_day(sprintpeoplerecord_id):
+    sprintpeoplerecord_request = request.get_json(force=True)
+    res = sprintpeoplerecord.query.filter(sprintpeoplerecord.id == sprintpeoplerecord_id).order_by(sprintpeoplerecord.id).all()
+    if (len(res) == 1):
+        res[0].sprint_daystatus = sprintpeoplerecord_request['sprint_daystatus']
+        db.session.commit()
+        return Response(json.dumps({'status': 'updated'}),  mimetype='application/json')
+    return Response(json.dumps({'status': 'not updated'}),  mimetype='application/json')
+
+
+@app.route('/add/daytype', methods=['POST'])
+def update_daytypes():
+    daytypes_request = request.get_json(force=True)
+
+    db.session.add(daytypes(daytypes_request['project_id'], daytypes_request['daytype_status'], daytypes_request['daytype_name'], daytypes_request['daytype_color'], daytypes_request['daytype_day'], daytypes_request['daytype_order']))
+    db.session.commit()
+
+    return Response(json.dumps({'status': 'ok'}),  mimetype='application/json')
+
+
+@app.route('/update/daytype/<daytype_id>', methods=['POST'])
+def update_daytype(daytype_id):
+    daytype_request = request.get_json(force=True)
+    res = daytypes.query.filter(daytypes.id == daytype_id).order_by(daytypes.id).all()
+    if (len(res) == 1):
+        res[0].daytype_status = daytype_request['daytype_status']
+        res[0].daytype_name = daytype_request['daytype_name']
+        res[0].daytype_color = daytype_request['daytype_color']
+        res[0].daytype_day = daytype_request['daytype_day']
+        res[0].daytype_order = daytype_request['daytype_order']
+
+        db.session.commit()
+        return Response(json.dumps({'status': 'updated'}),  mimetype='application/json')
+    return Response(json.dumps({'status': 'not updated'}),  mimetype='application/json')
+
+
+@app.route('/delete/daytype/<daytype_id>', methods=['GET'])
+def delete_daytype(daytype_id):
+    db.session.query(daytypes).filter(daytypes.id == daytype_id).delete()
+    db.session.commit()
+    return Response(json.dumps({'status': 'ok'}),  mimetype='application/json')
+
+
+
+@app.route('/get/daytypes/<project_id>', methods=['GET'])
+def get_daytypes(project_id):
+    res = daytypes.query.filter(daytypes.project_id == project_id).order_by(daytypes.daytype_order).all()
+    daytype_array = []
+    for row in res:
+        daytype_array.append(row2dict(row))
+    return Response(json.dumps(daytype_array),  mimetype='application/json')
+
 
 def row2dict(row):
     d = {}

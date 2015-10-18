@@ -175,7 +175,7 @@ curl  http://localhost:5000/delete/programme/1
 
 **Example**
 
-curl -H "Content-Type: application/json" -X POST -d '{"project_name":"abc", "programme_id": "1", "product_owner": "Gus Fring", "scrum_master": "Saul Goodman", "project_description": "desc"}' http://localhost:5000/add/project
+curl -H "Content-Type: application/json" -X POST -d '{"project_name":"abc", "programme_id": "1", "product_owner": "Gus Fring", "scrum_master": "Saul Goodman", "project_description": "desc", "delivery_manager": "fred", "scrum_tool_link": "link"}' http://localhost:5000/add/project
 
 **Response**
 
@@ -605,4 +605,115 @@ curl -H "Content-Type: application/json" -X POST -d '{"sprintpeople_id": "1", "s
 {
     "status": "ok"
 }
+```
+
+### Update specific sprint sprintpeoplerecord
+
+**End Point**
+
+/update/sprintpeoplerecord/<sprintpeoplerecord_id>
+
+**Example**
+
+curl -H "Content-Type: application/json" -X POST -d '{"sprint_daystatus": "2"  }' http://localhost:5000/update/sprintpeoplerecord/1
+
+
+**Response**
+
+```
+{
+    "status": "updated"
+}
+```
+
+## Project Day Types
+
+### Update single project day type
+
+**End Point**
+
+/update/daytype/<daytype_id>
+
+**Example**
+
+curl -H "Content-Type: application/json" -X POST -d '{"daytype_status": "F", "daytype_name": "Full Day", "daytype_color": "00FF00", "daytype_day": "1", "daytype_order": "2"}' http://localhost:5000/update/daytype/1
+
+**Response**
+
+```
+{
+    "status": "ok"
+}
+```
+
+
+### Update single project day type
+
+**End Point**
+
+/add/daytype/daytype
+
+**Example**
+
+curl -H "Content-Type: application/json" -X POST -d '{"project_id": "1": daytype_status": "F", "daytype_name": "Full Day", "daytype_color": "00FF00", "daytype_day": "1", "daytype_order": "2"}' http://localhost:5000/add/daytype
+
+**Response**
+
+```
+{
+    "status": "ok"
+}
+```
+
+### delete project day type
+
+**End Point**
+
+/delete/daytype/<daytype_id>
+
+**Example**
+
+curl  http://localhost:5000/delete/daytype/1
+
+**Response**
+
+```
+{
+    "status": "ok"
+}
+```
+
+### get project day types
+
+**End Point**
+
+/get/daytypes/<project_id>
+
+**Example**
+
+curl http://localhost:5000/get/daytypes/1
+
+**Response**
+
+```
+[
+    {
+        "project_id": "1",
+        "id": "1",
+        "daytype_color": "00FF00",
+        "daytype_status": "F",
+        "daytype_day": "1.0",
+        "daytype_order": "1",
+        "daytype_name": "Full Day"
+    },
+    {
+        "project_id": "1",
+        "id": "2",
+        "daytype_color": "0000FF",
+        "daytype_status": "L",
+        "daytype_day": "0.0",
+        "daytype_order": "2",
+        "daytype_name": "Leave"
+    }
+]
 ```
