@@ -6,7 +6,7 @@ import json
 
 @app.route('/')
 def login():
-    return '6'
+    return '7'
 
 ### Programme ###
 
