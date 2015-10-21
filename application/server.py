@@ -2,6 +2,7 @@ from application import app, db
 from flask import request, render_template, request, redirect, url_for, session, flash, jsonify, Response
 from application.models import programmes, projects, sprints, burndown, sprintpeople, sprintpeoplerecord, daytypes
 from sqlalchemy.sql import func
+from datetime import date
 
 import json
 
@@ -38,7 +39,9 @@ def get_programmes():
             else:
                 average_points = 0
 
-            sprint_res_sub = sprints.query.filter(sprints.project_id == row_sub.id).order_by(sprints.sprint_number.desc()).first()
+
+            sprint_res_sub = sprints.query.filter(sprints.project_id == row_sub.id).filter(sprints.start_date <= str(date.today())).filter(sprints.end_date >= str(date.today())).order_by(sprints.sprint_number.desc()).first()
+            #sprint_res_sub = sprints.query.filter(sprints.project_id == row_sub.id).order_by(sprints.sprint_number.desc()).first()
 
             cur_sprint_number = ''
             cur_sprint_end_date = ''
@@ -46,7 +49,7 @@ def get_programmes():
             cur_sprint_id = ''
             if sprint_res_sub:
                 cur_sprint_number = sprint_res_sub.sprint_number
-                cur_sprint_end_date = sprint_res_sub.end_date
+                cur_sprint_end_date = str(sprint_res_sub.end_date)
                 cur_sprint_rag = sprint_res_sub.sprint_rag
                 cur_sprint_id = sprint_res_sub.id
 
@@ -73,7 +76,7 @@ def get_programme(programme_id):
             else:
                 average_points = 0
 
-            sprint_res_sub = sprints.query.filter(sprints.project_id == row_sub.id).order_by(sprints.sprint_number.desc()).first()
+            sprint_res_sub = sprints.query.filter(sprints.project_id == row_sub.id).filter(sprints.start_date <= str(date.today())).filter(sprints.end_date >= str(date.today())).order_by(sprints.sprint_number.desc()).first()
 
             cur_sprint_number = ''
             cur_sprint_end_date = ''
@@ -81,7 +84,7 @@ def get_programme(programme_id):
             cur_sprint_id = ''
             if sprint_res_sub:
                 cur_sprint_number = sprint_res_sub.sprint_number
-                cur_sprint_end_date = sprint_res_sub.end_date
+                cur_sprint_end_date = str(sprint_res_sub.end_date)
                 cur_sprint_rag = sprint_res_sub.sprint_rag
                 cur_sprint_id = sprint_res_sub.id
 
@@ -120,7 +123,9 @@ def get_projects(project_id):
     res2 = {}
     for row in res:
 
-        sprint_res_sub = sprints.query.filter(sprints.project_id == row.id).order_by(sprints.sprint_number.desc()).first()
+
+        sprint_res_sub = sprints.query.filter(sprints.project_id == row.id).filter(sprints.start_date <= str(date.today())).filter(sprints.end_date >= str(date.today())).order_by(sprints.sprint_number.desc()).first()
+        #sprint_res_sub = sprints.query.filter(sprints.project_id == row.id).order_by(sprints.sprint_number.desc()).first()
 
         cur_sprint_number = ''
         cur_sprint_end_date = ''
@@ -128,10 +133,16 @@ def get_projects(project_id):
         cur_sprint_id = ''
         if sprint_res_sub:
             cur_sprint_number = sprint_res_sub.sprint_number
-            cur_sprint_end_date = sprint_res_sub.end_date
+            cur_sprint_end_date = str(sprint_res_sub.end_date)
             cur_sprint_rag = sprint_res_sub.sprint_rag
             cur_sprint_id = sprint_res_sub.id
 
+
+        sprint_res_sub_latest = sprints.query.filter(sprints.project_id == row.id).order_by(sprints.sprint_number.desc()).first()
+
+        latest_sprint_id = ''
+        if sprint_res_sub_latest:
+            latest_sprint_id = sprint_res_sub_latest.id
 
         average_points_res = sprints.query.with_entities(func.avg(sprints.delivered_points).label('average')).filter(sprints.project_id == row.id).first()
 
@@ -148,8 +159,8 @@ def get_projects(project_id):
         res_sub = sprints.query.filter(sprints.project_id == row.id).order_by(sprints.sprint_number).all()
         sprint_array = []
         for row_sub in res_sub:
-            sprint_array.append({'id': row_sub.id, 'project_id': row_sub.project_id, 'start_date': row_sub.start_date, 'end_date': row_sub.end_date, 'sprint_number': row_sub.sprint_number, 'sprint_rag': row_sub.sprint_rag, 'sprint_goal': row_sub.sprint_goal, 'sprint_deliverables': row_sub.sprint_deliverables, 'sprint_challenges': row_sub.sprint_challenges, 'delivered_points': row_sub.delivered_points, 'started_points': row_sub.started_points, 'agreed_points': row_sub.agreed_points, 'sprint_issues': row_sub.sprint_issues, 'sprint_risks': row_sub.sprint_risks, 'sprint_dependencies': row_sub.sprint_dependencies, 'sprint_days': row_sub.sprint_days })
-        res2 = {'name': row.project_name, 'programme_id': row.programme_id, 'id': row.id, 'product_owner': row.product_owner, 'scrum_master': row.scrum_master, 'sprint_array': sprint_array, 'project_description': row.project_description, 'delivery_manager': row.delivery_manager , 'scrum_tool_link': row.scrum_tool_link, 'programme_name': res_programme[0].programme_name, 'programme_manager': res_programme[0].programme_manager, 'service_manager': res_programme[0].service_manager, 'last_rag': cur_sprint_rag, 'last_sprint': cur_sprint_number, 'last_end_date': cur_sprint_end_date, 'last_sprint_id': cur_sprint_id, 'average_points': average_points}
+            sprint_array.append({'id': row_sub.id, 'project_id': row_sub.project_id, 'start_date': str(row_sub.start_date), 'end_date': str(row_sub.end_date), 'sprint_number': row_sub.sprint_number, 'sprint_rag': row_sub.sprint_rag, 'sprint_goal': row_sub.sprint_goal, 'sprint_deliverables': row_sub.sprint_deliverables, 'sprint_challenges': row_sub.sprint_challenges, 'delivered_points': row_sub.delivered_points, 'started_points': row_sub.started_points, 'agreed_points': row_sub.agreed_points, 'sprint_issues': row_sub.sprint_issues, 'sprint_risks': row_sub.sprint_risks, 'sprint_dependencies': row_sub.sprint_dependencies, 'sprint_days': row_sub.sprint_days, 'burndown_type': row_sub.burndown_type, 'burndown_total': row_sub.burndown_total })
+        res2 = {'name': row.project_name, 'programme_id': row.programme_id, 'id': row.id, 'product_owner': row.product_owner, 'scrum_master': row.scrum_master, 'sprint_array': sprint_array, 'project_description': row.project_description, 'delivery_manager': row.delivery_manager , 'scrum_tool_link': row.scrum_tool_link, 'programme_name': res_programme[0].programme_name, 'programme_manager': res_programme[0].programme_manager, 'service_manager': res_programme[0].service_manager, 'last_rag': cur_sprint_rag, 'last_sprint': cur_sprint_number, 'last_end_date': str(cur_sprint_end_date), 'last_sprint_id': cur_sprint_id, 'average_points': average_points, 'latest_sprint_id': latest_sprint_id}
     return Response(json.dumps(res2),  mimetype='application/json')
 
 
@@ -177,7 +188,7 @@ def update_project(project_id):
 @app.route('/add/sprint', methods=['POST'])
 def add_sprint():
     sprint_request = request.get_json(force=True)
-    sprint_row = sprints(sprint_request['project_id'], sprint_request['start_date'], sprint_request['end_date'], sprint_request['sprint_number'], sprint_request['sprint_rag'], sprint_request['sprint_goal'], sprint_request['sprint_deliverables'], sprint_request['sprint_challenges'], sprint_request['agreed_points'], sprint_request['delivered_points'], sprint_request['started_points'], sprint_request['sprint_issues'], sprint_request['sprint_risks'], sprint_request['sprint_dependencies'], sprint_request['sprint_days'], sprint_request['sprint_teamdays'])
+    sprint_row = sprints(sprint_request['project_id'], sprint_request['start_date'], sprint_request['end_date'], sprint_request['sprint_number'], sprint_request['sprint_rag'], sprint_request['sprint_goal'], sprint_request['sprint_deliverables'], sprint_request['sprint_challenges'], sprint_request['agreed_points'], sprint_request['delivered_points'], sprint_request['started_points'], sprint_request['sprint_issues'], sprint_request['sprint_risks'], sprint_request['sprint_dependencies'], sprint_request['sprint_days'], sprint_request['sprint_teamdays'], sprint_request['burndown_type'], sprint_request['burndown_total']  )
     db.session.add(sprint_row)
     db.session.commit()
     return Response(json.dumps({'status': 'ok', 'id': sprint_row.id}),  mimetype='application/json')
@@ -204,6 +215,9 @@ def update_sprint(sprint_id):
         res[0].sprint_dependencies = sprint_request['sprint_dependencies']
         res[0].sprint_days = sprint_request['sprint_days']
         res[0].sprint_teamdays = sprint_request['sprint_teamdays']
+        res[0].burndown_type = sprint_request['burndown_type']
+        res[0].burndown_total = sprint_request['burndown_total']
+
         db.session.commit()
         return Response(json.dumps({'status': 'updated'}),  mimetype='application/json')
     return Response(json.dumps({'status': 'not updated'}),  mimetype='application/json')
@@ -231,7 +245,7 @@ def get_projectsprint(project_id,sprint_id):
 
                 sprintpeople_array.append(merge_two_dicts(row2dict(row_sub3), {'sprint_record': sprintpeople_record_array}))
 
-            res2 = {'name': res[0].project_name, 'programme_id': res[0].programme_id, 'project_id': res[0].id, 'product_owner': res[0].product_owner, 'scrum_master': res[0].scrum_master, 'sprint_id': res_sub[0].id, 'start_date': res_sub[0].start_date, 'end_date': res_sub[0].end_date, 'sprint_number': res_sub[0].sprint_number, 'sprint_rag': res_sub[0].sprint_rag, 'sprint_goal': res_sub[0].sprint_goal, 'sprint_deliverables': res_sub[0].sprint_deliverables, 'sprint_challenges': res_sub[0].sprint_challenges, 'delivered_points': res_sub[0].delivered_points, 'started_points': res_sub[0].started_points, 'agreed_points': res_sub[0].agreed_points, 'sprint_issues': res_sub[0].sprint_issues, 'sprint_risks': res_sub[0].sprint_risks, 'sprint_dependencies': res_sub[0].sprint_dependencies, 'sprint_days': res_sub[0].sprint_days, 'burndown': burndown_array, 'project_description': res[0].project_description, 'delivery_manager': res[0].delivery_manager , 'scrum_tool_link': res[0].scrum_tool_link, 'sprintpeople_array': sprintpeople_array, 'sprint_teamdays': res_sub[0].sprint_teamdays}
+            res2 = {'name': res[0].project_name, 'programme_id': res[0].programme_id, 'project_id': res[0].id, 'product_owner': res[0].product_owner, 'scrum_master': res[0].scrum_master, 'sprint_id': res_sub[0].id, 'start_date': str(res_sub[0].start_date), 'end_date': str(res_sub[0].end_date), 'sprint_number': res_sub[0].sprint_number, 'sprint_rag': res_sub[0].sprint_rag, 'sprint_goal': res_sub[0].sprint_goal, 'sprint_deliverables': res_sub[0].sprint_deliverables, 'sprint_challenges': res_sub[0].sprint_challenges, 'delivered_points': res_sub[0].delivered_points, 'started_points': res_sub[0].started_points, 'agreed_points': res_sub[0].agreed_points, 'sprint_issues': res_sub[0].sprint_issues, 'sprint_risks': res_sub[0].sprint_risks, 'sprint_dependencies': res_sub[0].sprint_dependencies, 'sprint_days': res_sub[0].sprint_days, 'burndown_type': res_sub[0].burndown_type, 'burndown_total': res_sub[0].burndown_total, 'burndown': burndown_array, 'project_description': res[0].project_description, 'delivery_manager': res[0].delivery_manager , 'scrum_tool_link': res[0].scrum_tool_link, 'sprintpeople_array': sprintpeople_array, 'sprint_teamdays': res_sub[0].sprint_teamdays}
             return Response(json.dumps(res2),  mimetype='application/json')
         return Response(json.dumps({'status': 'Sprint not found'}),  mimetype='application/json')
     return Response(json.dumps({'status': 'Project not found'}),  mimetype='application/json')

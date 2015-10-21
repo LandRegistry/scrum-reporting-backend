@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, Float
+from sqlalchemy import Column, Integer, String, DateTime, Float, Date
 from sqlalchemy.dialects.postgresql import JSON
 from application import db
 
@@ -43,8 +43,8 @@ class sprints(db.Model):
 
     id = Column(Integer, primary_key=True)
     project_id = Column(Integer, nullable=False)
-    start_date = Column(String(100), nullable=False)
-    end_date = Column(String(100), nullable=True)
+    start_date = Column(Date, nullable=False)
+    end_date = Column(Date, nullable=True)
     sprint_number = Column(Integer, nullable=True)
     sprint_rag = Column(String(1), nullable=False)
     sprint_goal = Column(String(2000), nullable=True)
@@ -58,8 +58,10 @@ class sprints(db.Model):
     sprint_dependencies = Column(String(2000), nullable=True)
     sprint_days = Column(Integer, nullable=True)
     sprint_teamdays = Column(Integer, nullable=True)
+    burndown_type = Column(Integer, nullable=True)
+    burndown_total = Column(Integer, nullable=True)
 
-    def __init__(self, project_id, start_date, end_date, sprint_number, sprint_rag, sprint_goal, sprint_deliverables, sprint_challenges, agreed_points, delivered_points, started_points, sprint_issues, sprint_risks, sprint_dependencies, sprint_days, sprint_teamdays):
+    def __init__(self, project_id, start_date, end_date, sprint_number, sprint_rag, sprint_goal, sprint_deliverables, sprint_challenges, agreed_points, delivered_points, started_points, sprint_issues, sprint_risks, sprint_dependencies, sprint_days, sprint_teamdays, burndown_type, burndown_total):
         self.project_id = project_id
         self.start_date = start_date
         self.end_date = end_date
@@ -76,6 +78,8 @@ class sprints(db.Model):
         self.sprint_dependencies = sprint_dependencies
         self.sprint_days = sprint_days
         self.sprint_teamdays = sprint_teamdays
+        self.burndown_type = burndown_type
+        self.burndown_total = burndown_total
 
 class burndown(db.Model):
     __tablename__ = 'burndown'
